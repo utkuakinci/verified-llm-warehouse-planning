@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verified LLM Planning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Single light theme on purpose: the charts and the animation are rendered on this same surface.
+   Layout: one reading column, with wide figures and tables at the same measure. */
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-soft: #52514e;
+  --ink-muted: #706e69;
+  --rule: #e1e0d9;
+  --accent: #2a78d6;
+  --tint: #f1f5fb;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { background: var(--surface); }
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+}
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 20px 72px;
+  display: grid;
+  gap: 40px;
+}
+header, section { display: grid; gap: 14px; }
+h1, h2 { margin: 0; text-wrap: balance; line-height: 1.2; font-weight: 600; }
+h1 { font-size: 34px; letter-spacing: -0.01em; }
+h2 { font-size: 22px; padding-top: 22px; border-top: 1px solid var(--rule); }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 19px; color: var(--ink-soft); }
+figure { margin: 0; display: grid; gap: 8px; }
+img { display: block; max-width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
+figcaption { font-size: 14.5px; color: var(--ink-muted); max-width: 72ch; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+caption { text-align: left; color: var(--ink-muted); font-size: 14.5px; padding-bottom: 8px; }
+th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 500; color: var(--ink-soft); }
+th:first-child, td:first-child { text-align: left; }
+td { font-variant-numeric: tabular-nums; }
+td strong { font-weight: 600; }
+.best { background: var(--tint); }
+.interval { display: block; color: var(--ink-muted); font-size: 13px; }
+.finding { display: grid; gap: 4px; }
+.finding h3 { margin: 0; font-size: 17px; font-weight: 600; }
+.findings { display: grid; gap: 18px; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 72ch; }
+code { font-family: var(--mono); font-size: 0.9em; }
+pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: #f4f3f0;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+}
+@media (max-width: 480px) {
+  main { padding-top: 32px; gap: 32px; }
+  h1 { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Verified LLM Planning for Warehouse Robots</h1>
+    <p class="lead">A small open LLM writes PDDL plans. A classical validator checks every step, and a rejected plan goes back to the model with the reason. Fast Downward gives the optimal plan to compare against, and a control arm retries with no feedback.</p>
+  </header>
+
+  <figure>
+    <img src="animations/qwen3-4b_p016_r0.gif" width="918" height="504" alt="Animation of two robots in a warehouse grid. The first plan is rejected at step 37. The repaired plan delivers all three items.">
+    <figcaption>Qwen3-4B with 2 robots and 3 items. Its first plan runs 36 valid steps and then enters a station from the wrong cell. The validator names the step and the only entrance, and the model finishes in 4 more actions. This is the hardest problem the loop repaired, so it shows the mechanism at its best and is not a typical run.</figcaption>
+  </figure>
+
+  <section>
+    <h2>Results</h2>
+    <div class="table-wrap">
+      <table>
+        <caption>30 benchmark problems, up to 4 retries. Brackets are 95% intervals over problems.</caption>
+        <thead>
+          <tr><th scope="col">Model</th><th scope="col">Runs</th><th scope="col">First attempt</th><th scope="col">After feedback</th><th scope="col">After blind retries</th><th scope="col">Length / optimal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Qwen3-4B</td><td>60</td><td>10.0%<span class="interval">0 to 23</span></td><td class="best"><strong>26.7%</strong><span class="interval">12 to 42</span></td><td>10.0%<span class="interval">0 to 23</span></td><td>1.11</td></tr>
+          <tr><td>Qwen2.5-1.5B</td><td>30</td><td>0.0%</td><td>0.0%</td><td class="best"><strong>3.3%</strong></td><td>n/a</td></tr>
+          <tr><td>Qwen2.5-1.5B + LoRA</td><td>30</td><td>36.7%<span class="interval">20 to 53</span></td><td>43.3%<span class="interval">27 to 60</span></td><td class="best"><strong>56.7%</strong><span class="interval">40 to 73</span></td><td>1.09</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pair">
+      <figure>
+        <img src="figures/qwen3-4b_success_by_tier.png" width="1216" height="688" alt="Line chart of valid plans by difficulty tier for Qwen3-4B. Feedback reaches 100 percent on tier 1 and 50 percent on tier 2. Blind retries match the first attempt.">
+        <figcaption>Qwen3-4B by difficulty. Shaded bands are 95% intervals.</figcaption>
+      </figure>
+      <figure>
+        <img src="figures/qwen3-4b_success_by_attempt.png" width="1216" height="640" alt="Line chart of runs solved within each number of attempts. Feedback climbs from 10 to 26.7 percent. Blind retries stay flat at 10 percent.">
+        <figcaption>Qwen3-4B by attempt. Blind retries add nothing.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Findings</h2>
+    <div class="findings">
+      <div class="finding">
+        <h3>Feedback works on a model that is already close</h3>
+        <p>On Qwen3-4B, feedback beat blind retries by 16.7 points (95% interval +5.0 to +30.0). It repaired 10 of the 54 failed first attempts, in 2.0 rounds on average, and delivered 49.6% of all items against 32.8%.</p>
+      </div>
+      <div class="finding">
+        <h3>It does nothing for a model that is not</h3>
+        <p>Qwen2.5-1.5B produced 0 valid plans in 90 first attempts, and 4 rounds of feedback did not change that.</p>
+      </div>
+      <div class="finding">
+        <h3>Most of the gain is on the easy tiers</h3>
+        <p>Feedback took Qwen3-4B from 60% to 100% on tier 1 and from 0% to 50% on tier 2. It solved 1 of 10 runs on tier 4 and none on tiers 3, 5 and 6, where several robots share the map.</p>
+      </div>
+      <div class="finding">
+        <h3>Fine-tuning moved more than feedback did</h3>
+        <p>Three epochs of LoRA on 120 verified plans took Qwen2.5-1.5B from 0% to 36.7% on the first attempt, ahead of the larger Qwen3-4B.</p>
+      </div>
+      <div class="finding">
+        <h3>The two do not add up</h3>
+        <p>On the fine-tuned model and known maps, feedback did worse than blind retries, by 13.3 points (95% interval -26.7 to -3.3). The likely reason is that LoRA trained only on plans from the initial state, while a repair starts mid-plan and keeps every locked step. This run does not prove that explanation.</p>
+      </div>
+    </div>
+    <figure>
+      <img src="figures/qwen3-4b_models.png" width="1216" height="688" alt="Line chart of valid plans by tier for three models with validator feedback. The LoRA model leads on tiers 1 to 4, and the base 1.5B model stays at zero.">
+      <figcaption>All three models with validator feedback, by difficulty.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Known maps and new maps</h2>
+    <p>Benchmark and training tasks are distinct but share their maps, so every model also ran 20 problems on wider maps that no prompt or training example shows. New maps are harder in their own right: the mean optimal plan grows from 18.4 to 20.7 steps, and Qwen3-4B falls too although it was never trained on any map. So the drop cannot be read as memorization alone. On new maps the fine-tuned 1.5B model still beats Qwen3-4B, and for it feedback and blind retries are level.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Valid plans on tiers 1 to 4, the tiers both sets have.</caption>
+        <thead>
+          <tr><th scope="col">Model</th><th scope="col">First attempt, known</th><th scope="col">First attempt, new</th><th scope="col">Feedback, known</th><th scope="col">Feedback, new</th><th scope="col">Blind, known</th><th scope="col">Blind, new</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Qwen2.5-1.5B</td><td>0/20</td><td>0/20</td><td>0/20</td><td>0/20</td><td>1/20</td><td>0/20</td></tr>
+          <tr><td>Qwen2.5-1.5B + LoRA</td><td>11/20</td><td>4/20</td><td>13/20</td><td>7/20</td><td>16/20</td><td>6/20</td></tr>
+          <tr><td>Qwen3-4B</td><td>6/40</td><td>0/20</td><td>16/40</td><td>2/20</td><td>6/40</td><td>0/20</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Limits</h2>
+    <ul>
+      <li>30 problems is a small sample, and the intervals are wide. Qwen3-4B has 2 replicates per problem, the other models have 1.</li>
+      <li>Plan length is measured on solved runs only, which are mostly easy problems.</li>
+      <li>Fine-tuning used Fast Downward's plans, not the model's own. The base model produced too few verified plans to train on, so this measures learning from verified plans and is not a closed self-improvement loop.</li>
+      <li>Prompts were tuned on the dev set with Qwen2.5-1.5B and then frozen, so Qwen3-4B runs with prompts that were not tuned for it.</li>
+      <li>Llama 3.2 1B was not tested because the model is gated, and the Claude backend was not run because no API key was available.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

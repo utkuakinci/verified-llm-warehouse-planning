@@ -1,0 +1,391 @@
+{
+  "max_repairs": 4,
+  "arms": {
+    "blind": {
+      "runs": 30,
+      "first_attempt_valid_rate": 0.36666666666666664,
+      "final_valid_rate": 0.5666666666666667,
+      "mean_goal_fraction": 0.7194444444444444,
+      "repair_success_rate": 0.3157894736842105,
+      "mean_repairs_all_solved": 0.7058823529411765,
+      "mean_repairs_when_repaired": 2.0,
+      "mean_length_ratio": 1.0685644195786184,
+      "median_length_ratio": 1.0,
+      "optimal_plan_rate": 0.5294117647058824,
+      "final_valid_interval": [
+        0.4,
+        0.7333333333333333
+      ],
+      "first_attempt_valid_interval": [
+        0.2,
+        0.5333333333333333
+      ],
+      "cumulative_success": [
+        0.36666666666666664,
+        0.43333333333333335,
+        0.5333333333333333,
+        0.5333333333333333,
+        0.5666666666666667
+      ],
+      "outcomes_by_attempt": [
+        {
+          "valid": 0.36666666666666664,
+          "precondition": 0.6333333333333333,
+          "_n": 30
+        },
+        {
+          "valid": 0.10526315789473684,
+          "precondition": 0.8947368421052632,
+          "_n": 19
+        },
+        {
+          "valid": 0.17647058823529413,
+          "precondition": 0.8235294117647058,
+          "_n": 17
+        },
+        {
+          "goal": 0.07142857142857142,
+          "precondition": 0.9285714285714286,
+          "_n": 14
+        },
+        {
+          "valid": 0.07142857142857142,
+          "precondition": 0.9285714285714286,
+          "_n": 14
+        }
+      ]
+    },
+    "feedback": {
+      "runs": 30,
+      "first_attempt_valid_rate": 0.36666666666666664,
+      "final_valid_rate": 0.43333333333333335,
+      "mean_goal_fraction": 0.5888888888888889,
+      "repair_success_rate": 0.10526315789473684,
+      "mean_repairs_all_solved": 0.38461538461538464,
+      "mean_repairs_when_repaired": 2.5,
+      "mean_length_ratio": 1.0910403772472739,
+      "median_length_ratio": 1.0,
+      "optimal_plan_rate": 0.6153846153846154,
+      "final_valid_interval": [
+        0.26666666666666666,
+        0.6
+      ],
+      "first_attempt_valid_interval": [
+        0.2,
+        0.5333333333333333
+      ],
+      "cumulative_success": [
+        0.36666666666666664,
+        0.36666666666666664,
+        0.4,
+        0.43333333333333335,
+        0.43333333333333335
+      ],
+      "outcomes_by_attempt": [
+        {
+          "valid": 0.36666666666666664,
+          "precondition": 0.6333333333333333,
+          "_n": 30
+        },
+        {
+          "precondition": 1.0,
+          "_n": 19
+        },
+        {
+          "valid": 0.05263157894736842,
+          "precondition": 0.9473684210526315,
+          "_n": 19
+        },
+        {
+          "valid": 0.05555555555555555,
+          "precondition": 0.9444444444444444,
+          "_n": 18
+        },
+        {
+          "precondition": 1.0,
+          "_n": 17
+        }
+      ]
+    }
+  },
+  "tiers": {
+    "1": {
+      "mean_optimal_length": 8.0,
+      "blind": {
+        "runs": 5,
+        "first_attempt_valid_rate": 1.0,
+        "final_valid_rate": 1.0,
+        "mean_goal_fraction": 1.0,
+        "repair_success_rate": null,
+        "mean_repairs_all_solved": 0.0,
+        "mean_repairs_when_repaired": null,
+        "mean_length_ratio": 1.1,
+        "median_length_ratio": 1.0,
+        "optimal_plan_rate": 0.6,
+        "final_valid_interval": [
+          1.0,
+          1.0
+        ],
+        "first_attempt_valid_interval": [
+          1.0,
+          1.0
+        ]
+      },
+      "feedback": {
+        "runs": 5,
+        "first_attempt_valid_rate": 1.0,
+        "final_valid_rate": 1.0,
+        "mean_goal_fraction": 1.0,
+        "repair_success_rate": null,
+        "mean_repairs_all_solved": 0.0,
+        "mean_repairs_when_repaired": null,
+        "mean_length_ratio": 1.1,
+        "median_length_ratio": 1.0,
+        "optimal_plan_rate": 0.6,
+        "final_valid_interval": [
+          1.0,
+          1.0
+        ],
+        "first_attempt_valid_interval": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "2": {
+      "mean_optimal_length": 18.2,
+      "blind": {
+        "runs": 5,
+        "first_attempt_valid_rate": 1.0,
+        "final_valid_rate": 1.0,
+        "mean_goal_fraction": 1.0,
+        "repair_success_rate": null,
+        "mean_repairs_all_solved": 0.0,
+        "mean_repairs_when_repaired": null,
+        "mean_length_ratio": 1.0,
+        "median_length_ratio": 1.0,
+        "optimal_plan_rate": 1.0,
+        "final_valid_interval": [
+          1.0,
+          1.0
+        ],
+        "first_attempt_valid_interval": [
+          1.0,
+          1.0
+        ]
+      },
+      "feedback": {
+        "runs": 5,
+        "first_attempt_valid_rate": 1.0,
+        "final_valid_rate": 1.0,
+        "mean_goal_fraction": 1.0,
+        "repair_success_rate": null,
+        "mean_repairs_all_solved": 0.0,
+        "mean_repairs_when_repaired": null,
+        "mean_length_ratio": 1.0,
+        "median_length_ratio": 1.0,
+        "optimal_plan_rate": 1.0,
+        "final_valid_interval": [
+          1.0,
+          1.0
+        ],
+        "first_attempt_valid_interval": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "3": {
+      "mean_optimal_length": 18.2,
+      "blind": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.2,
+        "final_valid_rate": 0.4,
+        "mean_goal_fraction": 0.5,
+        "repair_success_rate": 0.25,
+        "mean_repairs_all_solved": 1.0,
+        "mean_repairs_when_repaired": 2.0,
+        "mean_length_ratio": 1.0805555555555557,
+        "median_length_ratio": 1.0805555555555557,
+        "optimal_plan_rate": 0.0,
+        "final_valid_interval": [
+          0.0,
+          0.8
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.6
+        ]
+      },
+      "feedback": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.2,
+        "final_valid_rate": 0.4,
+        "mean_goal_fraction": 0.5,
+        "repair_success_rate": 0.25,
+        "mean_repairs_all_solved": 1.0,
+        "mean_repairs_when_repaired": 2.0,
+        "mean_length_ratio": 1.2555555555555555,
+        "median_length_ratio": 1.2555555555555555,
+        "optimal_plan_rate": 0.0,
+        "final_valid_interval": [
+          0.0,
+          0.8
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.6
+        ]
+      }
+    },
+    "4": {
+      "mean_optimal_length": 29.0,
+      "blind": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.0,
+        "final_valid_rate": 0.8,
+        "mean_goal_fraction": 0.8,
+        "repair_success_rate": 0.8,
+        "mean_repairs_all_solved": 2.25,
+        "mean_repairs_when_repaired": 2.25,
+        "mean_length_ratio": 1.1133004926108374,
+        "median_length_ratio": 1.1231527093596059,
+        "optimal_plan_rate": 0.25,
+        "final_valid_interval": [
+          0.4,
+          1.0
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.0
+        ]
+      },
+      "feedback": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.0,
+        "final_valid_rate": 0.2,
+        "mean_goal_fraction": 0.39999999999999997,
+        "repair_success_rate": 0.2,
+        "mean_repairs_all_solved": 3.0,
+        "mean_repairs_when_repaired": 3.0,
+        "mean_length_ratio": 1.1724137931034482,
+        "median_length_ratio": 1.1724137931034482,
+        "optimal_plan_rate": 0.0,
+        "final_valid_interval": [
+          0.0,
+          0.6
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "5": {
+      "mean_optimal_length": 29.2,
+      "blind": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.0,
+        "final_valid_rate": 0.0,
+        "mean_goal_fraction": 0.26666666666666666,
+        "repair_success_rate": 0.0,
+        "mean_repairs_all_solved": null,
+        "mean_repairs_when_repaired": null,
+        "mean_length_ratio": null,
+        "median_length_ratio": null,
+        "optimal_plan_rate": null,
+        "final_valid_interval": [
+          0.0,
+          0.0
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.0
+        ]
+      },
+      "feedback": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.0,
+        "final_valid_rate": 0.0,
+        "mean_goal_fraction": 0.13333333333333333,
+        "repair_success_rate": 0.0,
+        "mean_repairs_all_solved": null,
+        "mean_repairs_when_repaired": null,
+        "mean_length_ratio": null,
+        "median_length_ratio": null,
+        "optimal_plan_rate": null,
+        "final_valid_interval": [
+          0.0,
+          0.0
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "6": {
+      "mean_optimal_length": 38.2,
+      "blind": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.0,
+        "final_valid_rate": 0.2,
+        "mean_goal_fraction": 0.75,
+        "repair_success_rate": 0.2,
+        "mean_repairs_all_solved": 1.0,
+        "mean_repairs_when_repaired": 1.0,
+        "mean_length_ratio": 1.0512820512820513,
+        "median_length_ratio": 1.0512820512820513,
+        "optimal_plan_rate": 0.0,
+        "final_valid_interval": [
+          0.0,
+          0.6
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.0
+        ]
+      },
+      "feedback": {
+        "runs": 5,
+        "first_attempt_valid_rate": 0.0,
+        "final_valid_rate": 0.0,
+        "mean_goal_fraction": 0.5,
+        "repair_success_rate": 0.0,
+        "mean_repairs_all_solved": null,
+        "mean_repairs_when_repaired": null,
+        "mean_length_ratio": null,
+        "median_length_ratio": null,
+        "optimal_plan_rate": null,
+        "final_valid_interval": [
+          0.0,
+          0.0
+        ],
+        "first_attempt_valid_interval": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "feedback_minus_blind": {
+    "difference": -0.13333333333333333,
+    "interval": [
+      -0.26666666666666666,
+      -0.03333333333333333
+    ]
+  },
+  "model": "Qwen/Qwen2.5-1.5B-Instruct+lora",
+  "settings": {
+    "backend": "hf",
+    "model": "Qwen/Qwen2.5-1.5B-Instruct",
+    "adapter": "adapters/planner",
+    "split": "benchmark",
+    "replicates": 1,
+    "max_repairs": 4,
+    "temperature": 0.3,
+    "repair_temperature": 0.7,
+    "batch_size": 5,
+    "max_tier": 99
+  }
+}
