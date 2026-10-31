@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verified LLM Planning, in plain English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Same theme and measure as index.html. */
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-soft: #52514e;
+  --ink-muted: #706e69;
+  --rule: #e1e0d9;
+  --accent: #2a78d6;
+  --tint: #f1f5fb;
+  --aisle: #f4f3f0;
+  --shelf: #c3c2b7;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { background: var(--surface); }
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+}
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 20px 72px;
+  display: grid;
+  gap: 40px;
+}
+header, section { display: grid; gap: 14px; min-width: 0; }
+h1, h2 { margin: 0; text-wrap: balance; line-height: 1.2; font-weight: 600; }
+h1 { font-size: 34px; letter-spacing: -0.01em; }
+h2 { font-size: 22px; padding-top: 22px; border-top: 1px solid var(--rule); }
+p { margin: 0; max-width: 68ch; }
+a { color: #1c5cab; }
+.back { font-size: 15px; }
+.lead { font-size: 19px; color: var(--ink-soft); }
+.question { padding: 14px 16px; background: var(--tint); border-radius: 4px; font-weight: 500; max-width: none; }
+figure { margin: 0; display: grid; gap: 8px; }
+img { display: block; max-width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
+figcaption { font-size: 14.5px; color: var(--ink-muted); max-width: 72ch; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+caption { text-align: left; color: var(--ink-muted); font-size: 14.5px; padding-bottom: 8px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 500; color: var(--ink-soft); }
+td.number, th.number { text-align: right; font-variant-numeric: tabular-nums; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; max-width: 72ch; }
+code { font-family: var(--mono); font-size: 0.9em; }
+pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: #f4f3f0;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.map {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 92px));
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.map span {
+  display: grid;
+  place-items: center;
+  height: 48px;
+  background: var(--aisle);
+  color: var(--ink-muted);
+  border-radius: 3px;
+}
+.map .shelf { background: var(--shelf); color: var(--ink); }
+.map .station { background: var(--surface); color: var(--ink); border: 1.5px solid var(--ink-soft); }
+.map .none { background: none; }
+@media (max-width: 480px) {
+  main { padding-top: 32px; gap: 32px; }
+  h1 { font-size: 28px; }
+  .map { font-size: 10.5px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="back"><a href="index.html">Back to the full report</a></p>
+    <h1>The project in plain English</h1>
+    <p class="lead">No background in planning or machine learning is needed. Every number here comes from the recorded runs behind the <a href="index.html">full report</a>.</p>
+  </header>
+
+  <section>
+    <h2>In short</h2>
+    <p>A small AI model writes plans for warehouse robots. A strict program, which knows the rules exactly, checks each plan step by step. If a plan is wrong, the reason goes back to the model and it tries to fix the plan.</p>
+    <p class="question">The main question: how much better is it to tell the model why a plan is wrong, compared with just letting it try again?</p>
+    <ul>
+      <li>With the Qwen3-4B model, 10% of first attempts were valid. Telling it the reason raised that to 26.7%. Letting it retry without the reason left it at 10%.</li>
+      <li>With a much weaker model, Qwen2.5-1.5B, telling it the reason changed nothing.</li>
+      <li>The largest single jump came from briefly training that weak model on correct plans: 0% to 36.7% on the first attempt.</li>
+      <li>The two methods did not add up. On maps it had trained on, the trained model did worse with the reason than without it.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The problem: a warehouse</h2>
+    <p>The warehouse is a grid, and a robot can only move to a neighbouring cell. This is the map of the easiest level:</p>
+    <div class="map" role="img" aria-label="A grid of five columns. The top and third rows are aisle cells. The second row has aisle cells with shelf1 and shelf2 between them. Below the third row, station1 and station2 sit under the second and fourth columns.">
+      <span>a00</span><span>a10</span><span>a20</span><span>a30</span><span>a40</span>
+      <span>a01</span><span class="shelf">shelf1</span><span>a21</span><span class="shelf">shelf2</span><span>a41</span>
+      <span>a02</span><span>a12</span><span>a22</span><span>a32</span><span>a42</span>
+      <span class="none"></span><span class="station">station1</span><span class="none"></span><span class="station">station2</span><span class="none"></span>
+    </div>
+    <p>Shelves are entered from the left or right. Stations are entered only from the aisle cell above them. Robots have three actions:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Action</th><th scope="col">What it does</th><th scope="col">What it needs</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>move</code></td><td>Goes to a neighbouring cell</td><td>The cells are neighbours and the target is empty</td></tr>
+          <tr><td><code>pick</code></td><td>Takes an item from a shelf</td><td>The robot is at that shelf, the item is there, and the robot carries nothing</td></tr>
+          <tr><td><code>drop</code></td><td>Leaves an item at a station</td><td>The robot is at that station and carries the item</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A cell holds one robot and a robot carries one item, so with several robots they can block each other. There are 30 problems across six levels:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Level</th><th scope="col" class="number">Robots</th><th scope="col" class="number">Items</th><th scope="col" class="number">Shortest plan, on average</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td class="number">1</td><td class="number">1</td><td class="number">8 steps</td></tr>
+          <tr><td>2</td><td class="number">1</td><td class="number">2</td><td class="number">18 steps</td></tr>
+          <tr><td>3</td><td class="number">2</td><td class="number">2</td><td class="number">18 steps</td></tr>
+          <tr><td>4</td><td class="number">2</td><td class="number">3</td><td class="number">29 steps</td></tr>
+          <tr><td>5</td><td class="number">3</td><td class="number">3</td><td class="number">29 steps</td></tr>
+          <tr><td>6</td><td class="number">2</td><td class="number">4</td><td class="number">38 steps</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Plans are written in PDDL, a standard language for planning problems. This real 7-step plan carries one item on the map above:</p>
+    <pre>(move robot1 a21 shelf2)        go to the shelf
+(pick robot1 item1 shelf2)      take the item
+(move robot1 shelf2 a21)        back to the aisle
+(move robot1 a21 a22)           down
+(move robot1 a22 a12)           left
+(move robot1 a12 station1)      into the station
+(drop robot1 item1 station1)    leave the item</pre>
+  </section>
+
+  <section>
+    <h2>The parts of the system</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Part</th><th scope="col">Job</th><th scope="col">Think of it as</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Language model (Qwen)</td><td>Writes the plan</td><td>An intern</td></tr>
+          <tr><td>Validator (unified-planning)</td><td>Checks the plan step by step and reports the first error and its cause</td><td>An inspector</td></tr>
+          <tr><td>Fast Downward</td><td>Finds the shortest plan by itself, so the model's plans can be measured against it</td><td>The answer key</td></tr>
+          <tr><td>Blind retries</td><td>Gets the same number of tries but never sees the reason</td><td>The placebo group in a drug trial</td></tr>
+          <tr><td>LoRA</td><td>Briefly trains the model on verified plans</td><td>A short course for the intern</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>If Fast Downward finds the shortest plan, why use a language model?</strong> In this small warehouse the classical planner is clearly better: it solves all 30 problems and finds the shortest plan each time. The project does not claim otherwise. It builds the loop where a model generates, a strict program verifies and the model learns from the error, and it measures what that loop actually gains.</p>
+  </section>
+
+  <section>
+    <h2>One run, step by step</h2>
+    <p>This is a real recorded run with 2 robots and 3 items, where the shortest plan has 28 steps.</p>
+    <figure>
+      <img src="animations/qwen3-4b_p016_r0.gif" width="918" height="504" alt="Animation of two robots in a warehouse grid. The first plan is rejected at step 37. The repaired plan delivers all three items.">
+      <figcaption>The hardest problem the loop repaired, so this shows it at its best and is not a typical run.</figcaption>
+    </figure>
+    <ol>
+      <li><strong>The model writes a plan.</strong> Each line is checked as soon as it is written, because nothing after the first wrong line can be used. Writing stops at line 37.</li>
+      <li><strong>The validator finds the error.</strong> The first 36 steps are fine. Step 37 tries to enter a cell that is not a neighbour:
+        <pre>Step 37: (move robot1 a33 station1) cannot be executed.
+Unsatisfied precondition: (connected a33 station1).
+From a33, robot1 can move to: a23, a43, station2.
+station1 can only be entered from: a13.</pre>
+      </li>
+      <li><strong>The correct steps are locked.</strong> The first 36 steps are kept and cannot change.</li>
+      <li><strong>The model gets a new question.</strong> It does not see its failed plan. It sees the situation those 36 steps reached, as a new and smaller problem, plus the reason for the rejection. Shown its own plan, the model mostly wrote the same plan again.</li>
+      <li><strong>The model writes the rest.</strong> Here it needs only four lines:
+        <pre>(move robot1 a33 a23)
+(move robot1 a23 a13)
+(move robot1 a13 station1)
+(drop robot1 item3 station1)</pre>
+      </li>
+      <li><strong>The whole plan is checked again.</strong> All 40 steps are valid. That is 1.43 times the shortest plan, because locked steps cannot be taken back.</li>
+      <li><strong>If it is still wrong, the loop continues,</strong> for at most 4 repair rounds in total.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Why there are two arms</h2>
+    <p>Give a model five tries and it may succeed by luck, even if it learns nothing. So every problem runs twice, as in a controlled experiment:</p>
+    <ul>
+      <li><strong>Feedback arm:</strong> sees the reason and continues from where the plan stopped.</li>
+      <li><strong>Blind arm:</strong> gets the original question again and never sees the reason.</li>
+    </ul>
+    <p>Both share the same first attempt and the same number of tries. The gap between them is the value of the information, not of trying more than once.</p>
+  </section>
+
+  <section>
+    <h2>What came out</h2>
+    <div class="table-wrap">
+      <table>
+        <caption>Share of runs that ended in a valid plan, on 30 problems with up to 4 retries.</caption>
+        <thead>
+          <tr><th scope="col">Model</th><th scope="col" class="number">First attempt</th><th scope="col" class="number">With the reason</th><th scope="col" class="number">Blind retries</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Qwen3-4B</td><td class="number">10.0%</td><td class="number"><strong>26.7%</strong></td><td class="number">10.0%</td></tr>
+          <tr><td>Qwen2.5-1.5B</td><td class="number">0.0%</td><td class="number">0.0%</td><td class="number"><strong>3.3%</strong></td></tr>
+          <tr><td>Qwen2.5-1.5B after LoRA training</td><td class="number">36.7%</td><td class="number">43.3%</td><td class="number"><strong>56.7%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><strong>The reason helps a model that is already close.</strong> On Qwen3-4B the gap is 16.7 points. Taking chance into account, it is likely between 5 and 30 points, so it is unlikely to be luck.</li>
+      <li><strong>It does not help a model that is not.</strong> Qwen2.5-1.5B wrote no valid plan in 90 first attempts.</li>
+      <li><strong>The gain is on the easy levels.</strong> On levels 3 to 6, where several robots share the map, 1 run of 40 was solved.</li>
+      <li><strong>Training did more than the reason did.</strong> The small model rose from 0% to 36.7% on the first attempt, ahead of the larger model.</li>
+      <li><strong>The two do not add up.</strong> On known maps the trained model did 13.3 points worse with the reason. One possible cause is that it trained only on plans from the start, while a repair begins mid-plan. That explanation has not been tested.</li>
+      <li><strong>Valid plans are close to the shortest.</strong> Qwen3-4B's valid plans were 1.11 times the shortest on average, measured on solved runs, which are mostly easy problems.</li>
+    </ul>
+    <p>The test problems share their maps with the training problems, so the models also ran on wider maps that no prompt or training example shows. The trained model dropped there, from 11 to 4 valid first attempts out of 20, but the untrained Qwen3-4B dropped too, because those problems are harder. The trained model was still the best of the three.</p>
+  </section>
+
+  <section>
+    <h2>What to keep in mind</h2>
+    <ul>
+      <li>30 problems is a small sample, so the numbers are estimates with wide margins.</li>
+      <li>Training used Fast Downward's plans, not the model's own, because the untrained model wrote too few valid plans. So this shows learning from verified plans. It is not a closed self-improving loop.</li>
+      <li>Prompts were tuned on separate practice problems using the small model and then frozen, so Qwen3-4B ran with prompts not tuned for it.</li>
+      <li>Claude was not compared because no API key was available, and Llama 3.2 1B was not tested because access to the model is restricted.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Terms</h2>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><th scope="row">LLM, language model</th><td>An AI model that generates text</td></tr>
+          <tr><th scope="row">Qwen3-4B, Qwen2.5-1.5B</th><td>Open models with about 4 billion and 1.5 billion parameters</td></tr>
+          <tr><th scope="row">PDDL</th><td>A standard language for describing planning problems and plans</td></tr>
+          <tr><th scope="row">Validator</th><td>A program that checks exactly whether a given plan follows the rules</td></tr>
+          <tr><th scope="row">Classical planner</th><td>A program that searches for a plan from the rules alone</td></tr>
+          <tr><th scope="row">Control arm</th><td>The comparison group that does not get the thing being measured</td></tr>
+          <tr><th scope="row">Fine-tuning</th><td>Briefly training an existing model on new examples</td></tr>
+          <tr><th scope="row">LoRA</th><td>A method that fine-tunes by training a small add-on to the model</td></tr>
+          <tr><th scope="row">Hugging Face</th><td>The ecosystem where open models and training tools are shared</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="back"><a href="index.html">Back to the full report</a></p>
+</main>
+</body>
+</html>
