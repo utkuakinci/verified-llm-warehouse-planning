@@ -1,0 +1,42 @@
+{
+ "example1": {
+  "length": 19,
+  "plan": [
+   "(move robot2 a22 a21)",
+   "(move robot2 a21 shelf1)",
+   "(pick robot2 item2 shelf1)",
+   "(move robot2 shelf1 a21)",
+   "(move robot2 a21 a22)",
+   "(move robot1 a41 a42)",
+   "(move robot2 a22 a23)",
+   "(move robot2 a23 a13)",
+   "(move robot1 a42 shelf4)",
+   "(pick robot1 item1 shelf4)",
+   "(move robot1 shelf4 a22)",
+   "(move robot1 a22 a23)",
+   "(move robot2 a13 station1)",
+   "(drop robot2 item2 station1)",
+   "(move robot2 station1 a13)",
+   "(move robot2 a13 a03)",
+   "(move robot1 a23 a13)",
+   "(move robot1 a13 station1)",
+   "(drop robot1 item1 station1)"
+  ],
+  "seconds": 0.33
+ },
+ "example2": {
+  "length": 9,
+  "plan": [
+   "(move robot1 a30 a20)",
+   "(move robot1 a20 a21)",
+   "(move robot1 a21 shelf2)",
+   "(pick robot1 item1 shelf2)",
+   "(move robot1 shelf2 a21)",
+   "(move robot1 a21 a22)",
+   "(move robot1 a22 a12)",
+   "(move robot1 a12 station1)",
+   "(drop robot1 item1 station1)"
+  ],
+  "seconds": 0.26
+ }
+}
