@@ -1,6 +1,6 @@
 # Verified LLM Planning for Warehouse Robots
 
-[![Go to Report](https://img.shields.io/badge/Go_to_Report-2a78d6?style=for-the-badge)](https://utkuakinci.github.io/verified-llm-warehouse-planning/results/index.html)
+[![Go to Report](https://img.shields.io/badge/Go_to_Report_%E2%86%97-2a78d6?style=for-the-badge)](https://utkuakinci.github.io/verified-llm-warehouse-planning/results/index.html)
 
 A small open LLM writes PDDL plans for warehouse robots. A classical validator checks every step, a rejected plan goes back to the model with the reason, and Fast Downward supplies the optimal plan to compare against. The project measures what that loop is worth, with a control arm that retries without any feedback.
 
