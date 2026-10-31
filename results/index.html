@@ -45,6 +45,8 @@ h1 { font-size: 34px; letter-spacing: -0.01em; }
 h2 { font-size: 22px; padding-top: 22px; border-top: 1px solid var(--rule); }
 p { margin: 0; max-width: 68ch; }
 .lead { font-size: 19px; color: var(--ink-soft); }
+.plain { padding: 12px 16px; background: var(--tint); border-radius: 4px; max-width: none; }
+.plain a { color: #1c5cab; font-weight: 500; }
 figure { margin: 0; display: grid; gap: 8px; }
 img { display: block; max-width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
 figcaption { font-size: 14.5px; color: var(--ink-muted); max-width: 72ch; }
@@ -85,6 +87,7 @@ pre {
   <header>
     <h1>Verified LLM Planning for Warehouse Robots</h1>
     <p class="lead">A small open LLM writes PDDL plans. A classical validator checks every step, and a rejected plan goes back to the model with the reason. Fast Downward gives the optimal plan to compare against, and a control arm retries with no feedback.</p>
+    <p class="plain">New to planning or LLMs? <a href="explained.html">Read the project in plain English</a>, with a map of the warehouse, one run step by step and a glossary.</p>
   </header>
 
   <figure>
