@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# LoRA checkpoints are large and can be rebuilt with `python -m warehouse_planning.finetune`.
+adapters/
+
+PROJE_ANLATIMI_TR.md
+CLAUDE.local.md
